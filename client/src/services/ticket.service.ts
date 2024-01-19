@@ -15,3 +15,15 @@ export const createTicketService = async (
 
   return result;
 };
+
+export const getTicketsService = async (): Promise<AxiosResponse<AxiosResponseInterface>> => {
+  const result = await axios
+    .get(API_URL.getTickets)
+    .then((response) => response)
+    .catch((error) => {
+      if (error.response.data.message) throw new Error(error.response.data.message);
+      else throw new Error("Something went wrong!");
+    });
+
+  return result;
+};

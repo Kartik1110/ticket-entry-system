@@ -22,14 +22,26 @@ model Agent {
 }
 
 model Ticket {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  id          String       @id @default(auto()) @map("_id") @db.ObjectId
   topic       String
   description String
-  dateCreated DateTime @default(now())
-  severity    String
+  dateCreated DateTime     @default(now())
+  severity    SeverityEnum @default(MEDIUM)
   type        String
   assignedTo  String
-  agentName   Agent    @relation(fields: [assignedTo], references: [name])
-  status      String
+  agentName   Agent        @relation(fields: [assignedTo], references: [name])
+  status      StatusEnum   @default(NEW)
   resolvedOn  DateTime
+}
+
+enum StatusEnum {
+  NEW
+  ASSIGNED
+  RESOLVED
+}
+
+enum SeverityEnum {
+  LOW
+  MEDIUM
+  HIGH
 }

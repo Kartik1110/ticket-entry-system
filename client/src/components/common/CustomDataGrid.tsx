@@ -70,10 +70,11 @@ function CustomDataGrid({ rows, columns }: { rows: any; columns: GridColDef[] })
     );
   }
 
+
   return (
     <StyledDataGrid
       isCellEditable={() => false}
-      className="w-[80vw] h-[80vh]"
+      className="w-auto min-w-60 h-[80vh]"
       sx={{ color: "white", height: "20vh", marginBottom: "10vh" }}
       rows={rows}
       columns={columns}

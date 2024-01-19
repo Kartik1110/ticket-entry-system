@@ -114,6 +114,10 @@ function CreateTicket() {
                 className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:border-blue-500"
                 {...register("severity", {
                   required: "This field is required !",
+                  pattern: {
+                    value: /^(LOW|MEDIUM|HIGH)$/,
+                    message: "Severity must be LOW, MEDIUM or HIGH",
+                  },
                 })}
               />
               {errors.severity && (
@@ -131,6 +135,10 @@ function CreateTicket() {
                 className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:border-blue-500"
                 {...register("status", {
                   required: "This field is required !",
+                  pattern: {
+                    value: /^(NEW|ASSIGNED|RESOLVED)$/,
+                    message: "Severity must be NEW, ASSIGNED or RESOLVED",
+                  },
                 })}
               />
               {errors.status && (

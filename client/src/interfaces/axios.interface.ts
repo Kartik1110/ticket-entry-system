@@ -1,4 +1,4 @@
 export interface AxiosResponseInterface {
   message: string;
-  data?: unknown[];
+  data?: any;
 }
