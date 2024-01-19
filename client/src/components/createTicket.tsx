@@ -1,8 +1,38 @@
 import { Link } from "react-router-dom";
 import Card from "./common/Card";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { TicketInterface } from "../interfaces";
+import { FieldError, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { createTicketService } from "../services/ticket.service";
 
 function CreateTicket() {
-  const onHandleSignIn = () => {};
+  const queryClient = useQueryClient();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<TicketInterface>();
+
+  const createTicketMutation = useMutation({
+    mutationFn: createTicketService,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["createTicket"] });
+      toast.success(data.data.message);
+      reset({ topic: "", description: "", severity: "", status: "", type: "" });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+
+  const onHandleCreateTicket: SubmitHandler<TicketInterface> = (data) => {
+    if (data) {
+      createTicketMutation.mutate(data);
+    }
+  };
 
   return (
     <div className="flex h-[92vh] w-screen">
@@ -31,7 +61,13 @@ function CreateTicket() {
                 type="topic"
                 id="topic"
                 className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:border-blue-500"
+                {...register("topic", {
+                  required: "This field is required!",
+                })}
               />
+              {errors.topic && (
+                <p className="text-red-500 text-sm">{(errors.topic as FieldError).message}</p>
+              )}
             </div>
 
             <div className="mb-6">
@@ -42,7 +78,13 @@ function CreateTicket() {
                 type="description"
                 id="description"
                 className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:border-blue-500"
+                {...register("description", {
+                  required: "This field is required !",
+                })}
               />
+              {errors.description && (
+                <p className="text-red-500 text-sm">{(errors.description as FieldError).message}</p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -53,7 +95,13 @@ function CreateTicket() {
                 type="type"
                 id="type"
                 className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:border-blue-500"
+                {...register("type", {
+                  required: "This field is required !",
+                })}
               />
+              {errors.type && (
+                <p className="text-red-500 text-sm">{(errors.type as FieldError).message}</p>
+              )}
             </div>
 
             <div className="mb-6">
@@ -64,7 +112,13 @@ function CreateTicket() {
                 type="severity"
                 id="severity"
                 className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:border-blue-500"
+                {...register("severity", {
+                  required: "This field is required !",
+                })}
               />
+              {errors.severity && (
+                <p className="text-red-500 text-sm">{(errors.severity as FieldError).message}</p>
+              )}
             </div>
 
             <div className="mb-6">
@@ -75,11 +129,17 @@ function CreateTicket() {
                 type="status"
                 id="status"
                 className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:border-blue-500"
+                {...register("status", {
+                  required: "This field is required !",
+                })}
               />
+              {errors.status && (
+                <p className="text-red-500 text-sm">{(errors.status as FieldError).message}</p>
+              )}
             </div>
 
             <button
-              onClick={onHandleSignIn}
+              onClick={handleSubmit(onHandleCreateTicket)}
               className="w-full bg-blue-500 text-white px-4 py-2 rounded-md focus:outline-none hover:bg-blue-600"
             >
               Create Ticket
