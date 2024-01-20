@@ -8,6 +8,7 @@ const prisma = new PrismaClient();
 
 const FILE_PATH = "./src/constants/agents.txt";
 
+/* Create a new ticket */
 ticketsRouter.post("/support-ticket", async (req: Request, res: Response) => {
   try {
     const parsedData = ticketSchema.parse(req.body);
@@ -42,14 +43,39 @@ ticketsRouter.post("/support-ticket", async (req: Request, res: Response) => {
   }
 });
 
+/* Get Tickets - using pagination, filter and sort */
 ticketsRouter.get("/support-tickets", async (req: Request, res: Response) => {
   const { page, pageSize } = req.query;
 
-  const tickets = await prisma.ticket.findMany();
-  if (tickets && tickets.length > 0) {
-    res.status(201).json({ message: "Tickets found", data: tickets });
+  if (page && pageSize && Number(pageSize) > 0) {
+    let queryOptions = {
+      skip: Number(page) * Number(pageSize),
+      take: Number(pageSize),
+    };
+    /* If page is 0 then skip will be 0, this is because DataGrid sets 1st page as 0 */
+    if (page && Number(page) === 0 && pageSize && Number(pageSize) > 0) {
+      queryOptions = {
+        skip: 0,
+        take: Number(pageSize),
+      };
+    }
+    try {
+      const ticketsCount = await prisma.ticket.count();
+
+      const tickets = await prisma.ticket.findMany(queryOptions);
+      if (tickets && tickets.length > 0) {
+        res
+          .status(200)
+          .json({ message: "Tickets found", data: tickets, totalRowCount: ticketsCount });
+      } else {
+        res.status(404).json({ message: "No tickets found" });
+      }
+    } catch (error) {
+      console.error("Error fetching tickets:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   } else {
-    res.status(404).json({ message: "No tickets found" });
+    res.status(400).json({ message: "Invalid page or pageSize parameters" });
   }
 });
 

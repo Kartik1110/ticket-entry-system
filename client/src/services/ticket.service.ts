@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from "axios";
 import { API_URL } from "../shared/apiEndPointURL";
-import { AxiosResponseInterface, TicketInterface } from "../interfaces";
+import { AxiosResponseInterface, PageInfoInterface, TicketInterface } from "../interfaces";
 
 export const createTicketService = async (
   requestBody: TicketInterface
@@ -16,9 +16,9 @@ export const createTicketService = async (
   return result;
 };
 
-export const getTicketsService = async (): Promise<AxiosResponse<AxiosResponseInterface>> => {
+export const getTicketsService = async (params: PageInfoInterface): Promise<AxiosResponse<AxiosResponseInterface>> => {
   const result = await axios
-    .get(API_URL.getTickets)
+    .get(API_URL.getTickets, { params })
     .then((response) => response)
     .catch((error) => {
       if (error.response.data.message) throw new Error(error.response.data.message);
