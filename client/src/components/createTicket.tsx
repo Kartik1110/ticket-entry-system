@@ -2,9 +2,11 @@ import { Link } from "react-router-dom";
 import Card from "./common/Card";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { TicketInterface } from "../interfaces";
-import { FieldError, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { createTicketService } from "../services/ticket.service";
+import { TICKET_FORM_FIELDS } from "../constants";
+import InputField from "./common/InputField";
 
 function CreateTicket() {
   const queryClient = useQueryClient();
@@ -61,98 +63,17 @@ function CreateTicket() {
               </Link>
             </div>
 
-            <div className="mb-6">
-              <label htmlFor="topic" className="text-sm text-gray-400">
-                Topic:
-              </label>
-              <input
-                type="topic"
-                id="topic"
-                className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:border-blue-500"
-                {...register("topic", {
-                  required: "This field is required!",
-                })}
+            {/* Form Fields */}
+            {TICKET_FORM_FIELDS.map((item) => (
+              <InputField
+                key={item.id}
+                label={item.label}
+                name={item.name as "topic" | "description" | "type" | "severity" | "status"}
+                register={register}
+                registerOptions={item.registerOptions}
+                errors={errors}
               />
-              {errors.topic && (
-                <p className="text-red-500 text-sm">{(errors.topic as FieldError).message}</p>
-              )}
-            </div>
-
-            <div className="mb-6">
-              <label htmlFor="description" className="text-sm text-gray-400">
-                Description:
-              </label>
-              <input
-                type="description"
-                id="description"
-                className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:border-blue-500"
-                {...register("description", {
-                  required: "This field is required !",
-                })}
-              />
-              {errors.description && (
-                <p className="text-red-500 text-sm">{(errors.description as FieldError).message}</p>
-              )}
-            </div>
-
-            <div className="mb-4">
-              <label htmlFor="type" className="text-sm text-gray-400">
-                Type:
-              </label>
-              <input
-                type="type"
-                id="type"
-                className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:border-blue-500"
-                {...register("type", {
-                  required: "This field is required !",
-                })}
-              />
-              {errors.type && (
-                <p className="text-red-500 text-sm">{(errors.type as FieldError).message}</p>
-              )}
-            </div>
-
-            <div className="mb-6">
-              <label htmlFor="severity" className="text-sm text-gray-400">
-                Severity:
-              </label>
-              <input
-                type="severity"
-                id="severity"
-                className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:border-blue-500"
-                {...register("severity", {
-                  required: "This field is required !",
-                  pattern: {
-                    value: /^(LOW|MEDIUM|HIGH)$/,
-                    message: "Severity must be LOW, MEDIUM or HIGH",
-                  },
-                })}
-              />
-              {errors.severity && (
-                <p className="text-red-500 text-sm">{(errors.severity as FieldError).message}</p>
-              )}
-            </div>
-
-            <div className="mb-6">
-              <label htmlFor="status" className="text-sm text-gray-400">
-                Status:
-              </label>
-              <input
-                type="status"
-                id="status"
-                className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:border-blue-500"
-                {...register("status", {
-                  required: "This field is required !",
-                  pattern: {
-                    value: /^(NEW|ASSIGNED|RESOLVED)$/,
-                    message: "Severity must be NEW, ASSIGNED or RESOLVED",
-                  },
-                })}
-              />
-              {errors.status && (
-                <p className="text-red-500 text-sm">{(errors.status as FieldError).message}</p>
-              )}
-            </div>
+            ))}
 
             <button
               onClick={handleSubmit(onHandleCreateTicket)}
