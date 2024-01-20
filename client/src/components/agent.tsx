@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { agentService } from "../services/agent.service";
 import CustomLoader from "./common/CustomLoader";
+import { Link } from "react-router-dom";
 
 function Agent() {
   const queryClient = useQueryClient();
@@ -46,12 +47,12 @@ function Agent() {
                 <div className="mb-5">
                   <h2 className="text-2xl font-semibold">Create Agent</h2>
                   <span className="text-white pr-2">Already have an agent?</span>
-                  <a
-                    href={"/create-ticket"}
+                  <Link
+                    to={"/create-ticket"}
                     className="text-blue-600 hover:text-blue-500 hover:cursor-pointer"
                   >
                     Create ticket
-                  </a>
+                  </Link>
                 </div>
 
                 <div className="mb-4">
