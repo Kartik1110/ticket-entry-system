@@ -1,22 +1,31 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { GridColDef } from "@mui/x-data-grid";
 import CustomDataGrid from "../components/common/CustomDataGrid";
 import CustomLoader from "../components/common/CustomLoader";
 import { getTicketsService } from "../services/ticket.service";
+import { PageInfoInterface, TicketsTableDataInterface } from "../interfaces";
 
 function TicketsPage() {
-  const { data, isLoading } = useQuery({
-    queryKey: ["ticketsList"],
-    queryFn: getTicketsService,
+  const [, setRowCountState] = useState<number | null>(null);
+  const [paginationModel, setPaginationModel] = useState<PageInfoInterface>({
+    page: 0,
+    pageSize: 5,
   });
 
-  const formattedData = useMemo(() => {
-    const finalData = { columns: [] as GridColDef[], rows: [] as { [key: string]: string }[] };
+  const { data, isLoading, refetch, isFetching } = useQuery({
+    queryKey: ["ticketsList"],
+    queryFn: () => getTicketsService(paginationModel),
+  });
 
-    if (data?.data.data && data?.data.data.length > 0) {
-      const formattedColumns = Object.keys(data?.data.data[0]).map((item) => ({
+  const totalRowCount = data?.data?.totalRowCount;
+
+  /* The `formattedData` is used to set formatted table data into the data grid */
+  const formattedData = useMemo(() => {
+    const finalData: TicketsTableDataInterface = { columns: [], rows: [] };
+
+    if (data?.data.data && data.data.data.length > 0) {
+      const formattedColumns = Object.keys(data.data.data[0]).map((item) => ({
         field: item,
         headerName: item,
         width: 150,
@@ -29,6 +38,28 @@ function TicketsPage() {
 
     return finalData;
   }, [data?.data.data]);
+
+  /**
+   * The function `handlePageChange` updates the pagination model's page property with a newPage value.
+   */
+  const handlePageChange = (newPage: number) => {
+    setPaginationModel((prevModel) => ({
+      ...prevModel,
+      page: newPage,
+    }));
+  };
+
+  useEffect(() => {
+    refetch();
+  }, [paginationModel, refetch]);
+
+  useEffect(() => {
+    if (totalRowCount !== undefined) {
+      setRowCountState(totalRowCount);
+    } else {
+      setRowCountState(null);
+    }
+  }, [totalRowCount]);
 
   return (
     <>
@@ -43,7 +74,19 @@ function TicketsPage() {
             >
               Create Ticket
             </Link>
-            <CustomDataGrid rows={formattedData.rows} columns={formattedData.columns} />
+            <CustomDataGrid
+              rows={formattedData.rows}
+              columns={formattedData.columns}
+              rowCount={totalRowCount}
+              loading={isFetching}
+              pageSizeOptions={[5]}
+              paginationModel={paginationModel}
+              paginationMode="server"
+              onPaginationModelChange={(newModel: PageInfoInterface) => {
+                handlePageChange(newModel.page);
+                getTicketsService(newModel);
+              }}
+            />
           </div>
         </div>
       )}

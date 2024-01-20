@@ -1,16 +1,9 @@
-import {
-  DataGrid,
-  GridColDef,
-  gridPageCountSelector,
-  gridPageSelector,
-  useGridApiContext,
-  useGridSelector,
-} from "@mui/x-data-grid";
-import Pagination from "@mui/material/Pagination";
-import PaginationItem from "@mui/material/PaginationItem";
+import { DataGrid, DataGridProps } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 
-function CustomDataGrid({ rows, columns }: { rows: any; columns: GridColDef[] }) {
+interface CustomDataGridProps extends DataGridProps {}
+
+function CustomDataGrid({ rows, columns, ...props }: CustomDataGridProps) {
   const StyledDataGrid = styled(DataGrid)(() => ({
     border: "solid 1px #303030",
     color: "rgba(255,255,255,0.85)",
@@ -46,41 +39,24 @@ function CustomDataGrid({ rows, columns }: { rows: any; columns: GridColDef[] })
     "& .MuiPaginationItem-root": {
       borderRadius: 0,
     },
-    // ...customCheckbox(theme),
+    "& .MuiTablePagination-displayedRows": {
+      color: "white",
+    },
+    "& .MuiButtonBase-root": {
+      color: "white",
+      border: "solid 1px #303030",
+      margin: "10px",
+    },
   }));
-
-  function CustomPagination() {
-    const apiRef = useGridApiContext();
-    const page = useGridSelector(apiRef, gridPageSelector);
-    const pageCount = useGridSelector(apiRef, gridPageCountSelector);
-
-    return (
-      <Pagination
-      sx={{color:'white'}}
-        variant="outlined"
-        shape="rounded"
-        page={page + 1}
-        count={pageCount}
-        // @ts-expect-error
-        renderItem={(props2) => <PaginationItem sx={{color:'white'}} {...props2} disableRipple />}
-        onChange={(event: React.ChangeEvent<unknown>, value: number) =>
-          apiRef.current.setPage(value - 1)
-        }
-      />
-    );
-  }
-
 
   return (
     <StyledDataGrid
       isCellEditable={() => false}
-      className="w-auto min-w-60 h-[80vh]"
-      sx={{ color: "white", height: "20vh", marginBottom: "10vh" }}
+      className="w-auto min-w-60 h-[50vh]"
+      sx={{ color: "white", marginBottom: "10vh" }}
       rows={rows}
       columns={columns}
-      slots={{
-        pagination: CustomPagination,
-      }}
+      {...props}
     />
   );
 }
