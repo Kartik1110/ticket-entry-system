@@ -1,9 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
-
-const NAV_TABS = [
-  { id: 1, name: "Agent", path: "/agent" },
-  { id: 2, name: "Ticket", path: "/ticket" },
-];
+import { NAV_TABS } from "../../constants";
 
 function Navbar() {
   return (

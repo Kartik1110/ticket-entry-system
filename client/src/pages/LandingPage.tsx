@@ -8,7 +8,7 @@ function LandingPage() {
         <h3 className="text-4xl text-white mb-10">New here? Start by creating an agent!!</h3>
         <div className="mb-5">
           <Link
-            to={"/create-ticket"}
+            to={"/agent"}
             className="p-6 text-white text-lg rounded-lg bg-blue-600 hover:bg-blue-500 hover:cursor-pointer"
           >
             Create Agent

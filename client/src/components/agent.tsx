@@ -1,11 +1,13 @@
-import { FieldError, SubmitHandler, useForm } from "react-hook-form";
-import { AgentInterface } from "../interfaces";
-import Card from "./common/Card";
-import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import Card from "./common/Card";
+import { AgentInterface } from "../interfaces";
 import { agentService } from "../services/agent.service";
 import CustomLoader from "./common/CustomLoader";
-import { Link } from "react-router-dom";
+import { AGENT_FORM_FIELDS } from "../constants";
+import InputField from "./common/InputField";
 
 function Agent() {
   const queryClient = useQueryClient();
@@ -17,6 +19,7 @@ function Agent() {
     formState: { errors },
   } = useForm<AgentInterface>();
 
+  /* The `createAgentMutation` is used to handle the mutation (creation) of an agent. */
   const createAgentMutation = useMutation({
     mutationFn: agentService,
     onSuccess: (data) => {
@@ -29,8 +32,13 @@ function Agent() {
     },
   });
 
+  /**
+   * The function `onHandleCreateAgent` is a submit handler that calls the `createAgentMutation` function
+   * with the provided data if it exists.
+   */
   const onHandleCreateAgent: SubmitHandler<AgentInterface> = (data) => {
     if (data) {
+      console.log("🚀 ~ Agent ~ data:", data);
       createAgentMutation.mutate(data);
     }
   };
@@ -55,80 +63,17 @@ function Agent() {
                   </Link>
                 </div>
 
-                <div className="mb-4">
-                  <label htmlFor="name" className="text-sm text-gray-400">
-                    Name:
-                  </label>
-                  <input
-                    type="name"
-                    id="name"
-                    className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md active:bg-inherit focus:outline-none focus:border-blue-500"
-                    {...register("name", {
-                      required: "This field is required!",
-                    })}
+                {/* Form Fields */}
+                {AGENT_FORM_FIELDS.map((item) => (
+                  <InputField
+                    key={item.id}
+                    label={item.label}
+                    name={item.name as "name" | "email" | "phone" | "description" | "active"}
+                    register={register}
+                    registerOptions={item.registerOptions}
+                    errors={errors}
                   />
-                  {errors.name && (
-                    <p className="text-red-500 text-sm">{(errors.name as FieldError).message}</p>
-                  )}
-                </div>
-
-                <div className="mb-4">
-                  <label htmlFor="email" className="text-sm text-gray-400">
-                    Email:
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md active:bg-inherit focus:outline-none focus:border-blue-500"
-                    {...register("email", {
-                      required: "This field is required !",
-                      pattern: {
-                        value: /^\S+@\S+$/i,
-                        message: "The value should be an email !",
-                      },
-                    })}
-                  />
-                  {errors.email && (
-                    <p className="text-red-500 text-sm">{(errors.email as FieldError).message}</p>
-                  )}
-                </div>
-
-                <div className="mb-4">
-                  <label htmlFor="phone" className="text-sm text-gray-400">
-                    Phone:
-                  </label>
-                  <input
-                    type="phone"
-                    id="phone"
-                    className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md active:bg-inherit focus:outline-none focus:border-blue-500"
-                    {...register("phone", {
-                      required: "This field is required !",
-                    })}
-                  />
-                  {errors.phone && (
-                    <p className="text-red-500 text-sm">{(errors.phone as FieldError).message}</p>
-                  )}
-                </div>
-
-                <div className="mb-6">
-                  <label htmlFor="description" className="text-sm text-gray-400">
-                    Description:
-                  </label>
-                  <input
-                    type="description"
-                    id="description"
-                    className="w-full py-2 px-3 mt-1 bg-gray-700 text-white rounded-md focus:outline-none focus:border-blue-500"
-                    {...register("description", {
-                      required: "This field is required !",
-                    })}
-                  />
-                  {errors.description && (
-                    <p className="text-red-500 text-sm">
-                      {(errors.description as FieldError).message}
-                    </p>
-                  )}
-                </div>
-
+                ))}
                 <button
                   onClick={handleSubmit(onHandleCreateAgent)}
                   className="w-full bg-blue-500 text-white px-4 py-2 rounded-md focus:outline-none hover:bg-blue-600"
