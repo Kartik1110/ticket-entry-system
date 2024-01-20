@@ -3,6 +3,9 @@ import { styled } from "@mui/material/styles";
 
 interface CustomDataGridProps extends DataGridProps {}
 
+/**
+@description : This is a custom DataGrid component
+*/
 function CustomDataGrid({ rows, columns, ...props }: CustomDataGridProps) {
   const StyledDataGrid = styled(DataGrid)(() => ({
     border: "solid 1px #303030",

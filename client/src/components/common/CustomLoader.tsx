@@ -1,6 +1,9 @@
 import { RotatingSquare } from "react-loader-spinner";
 
-const CustomLoader = () => {
+/**
+@description : This is a custom loader component
+*/
+function CustomLoader() {
   return (
     <div className="flex items-center justify-center h-[92vh] w-screen bg-gradient-to-r from-black to-gray-800 text-white p-8">
       <RotatingSquare
@@ -14,6 +17,6 @@ const CustomLoader = () => {
       />
     </div>
   );
-};
+}
 
 export default CustomLoader;

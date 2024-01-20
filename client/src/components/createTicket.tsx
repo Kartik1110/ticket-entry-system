@@ -16,6 +16,7 @@ function CreateTicket() {
     formState: { errors },
   } = useForm<TicketInterface>();
 
+  /* The `createTicketMutation` is used to handle the logic for creating a ticket. */
   const createTicketMutation = useMutation({
     mutationFn: createTicketService,
     onSuccess: (data) => {
@@ -28,6 +29,10 @@ function CreateTicket() {
     },
   });
 
+  /**
+   * The function `onHandleCreateTicket` is a submit handler that calls the `createTicketMutation` if
+   * `data` is present.
+   */
   const onHandleCreateTicket: SubmitHandler<TicketInterface> = (data) => {
     if (data) {
       createTicketMutation.mutate(data);
@@ -48,7 +53,10 @@ function CreateTicket() {
             <div className="mb-5">
               <h2 className="text-2xl font-semibold">Create Ticket</h2>
               <span className="text-white pr-2">Do not have an agent?</span>
-              <Link to={"/agent"} className="text-blue-600 hover:text-blue-500 hover:cursor-pointer">
+              <Link
+                to={"/agent"}
+                className="text-blue-600 hover:text-blue-500 hover:cursor-pointer"
+              >
                 Create agent
               </Link>
             </div>
