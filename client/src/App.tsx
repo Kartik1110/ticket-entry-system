@@ -7,7 +7,7 @@ import MainPage from "./pages/MainPage";
 import TicketsPage from "./pages/TicketsPage";
 import CreateTicket from "./components/createTicket";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   const queryClient = new QueryClient();
@@ -18,6 +18,10 @@ function App() {
       element: <MainPage />,
       errorElement: <ErrorPage />,
       children: [
+        {
+          path: "/",
+          element: <LandingPage />,
+        },
         {
           path: "/agent",
           element: <Agent />,
@@ -36,7 +40,6 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={true} />
       <RouterProvider router={router} />
       <ToastContainer />
     </QueryClientProvider>
