@@ -43,3 +43,55 @@ export const AGENT_FORM_FIELDS = [
     },
   },
 ];
+
+/* TICKET_FORM_FIELDS is used to render form fields on the create ticket form */
+export const TICKET_FORM_FIELDS = [
+  {
+    id: 1,
+    label: "Topic",
+    name: "topic",
+    registerOptions: {
+      required: `This field is required!`,
+    },
+  },
+  {
+    id: 2,
+    label: "Description",
+    name: "description",
+    registerOptions: {
+      required: "This field is required !",
+    },
+  },
+  {
+    id: 3,
+    label: "Type",
+    name: "type",
+    registerOptions: {
+      required: "This field is required !",
+    },
+  },
+  {
+    id: 4,
+    label: "Severity",
+    name: "severity",
+    registerOptions: {
+      required: "This field is required !",
+      pattern: {
+        value: /^(LOW|MEDIUM|HIGH)$/,
+        message: "Severity must be LOW, MEDIUM or HIGH",
+      },
+    },
+  },
+  {
+    id: 5,
+    label: "Status",
+    name: "status",
+    registerOptions: {
+      required: "This field is required !",
+      pattern: {
+        value: /^(NEW|ASSIGNED|RESOLVED)$/,
+        message: "Severity must be NEW, ASSIGNED or RESOLVED",
+      },
+    },
+  },
+];
